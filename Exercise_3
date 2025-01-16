@@ -1,0 +1,118 @@
+
+#1 
+#Read the dataset "water_potability.csv" into R. 
+#Preview its structure and summarize the values.
+
+tabela <- read.table("E:/DS/WSB/R/Cwiczenie/dane do ćwiczeń/water_potability.csv", 
+                      header = TRUE, sep =  ",", dec=".")
+
+tabela
+str(tabela)
+summary(tabela)
+?read.csv
+head(tabela)
+#2 Idntify missing values
+head(complete.cases(tabela))
+tabela[complete.cases(tabela),]
+tabela[!complete.cases(tabela),]
+#3 Calculate mean of ph values (without NA)
+median(tabela$ph, na.rm = TRUE)
+#4 Create list of all missing values
+tabela2 <- tabela[!complete.cases(tabela$ph),]
+tabela$ph[is.na(tabela$ph)]  <- round(mean(tabela$ph, na.rm = TRUE))
+tabela
+#5 Fill up all ph missing values average
+tabela$ph[is.na(tabela$ph)]  <- round(mean(tabela$ph, na.rm = TRUE))
+#6 Fill up all sulfate missing values medane
+tabela$Sulfate[is.na(tabela$Sulfate)] <- median(tabela$Sulfate, na.rm = TRUE)
+class(tabela$Sulfate)
+median(tabela$Sulfate, na.rm = TRUE)
+head(tabela)
+#7 Remove rows with null Trihalomethanes
+water <- tabela[complete.cases(tabela$Trihalomethanes),]
+str(water)
+#8 Check that your data is clean
+summary(water)
+water[!complete.cases(water),]
+
+#Work with categorical variables
+
+#9 Read data and check values
+
+depTab <- read.table("E:/DS/WSB/R/Cwiczenie/dane do ćwiczeń/b_depressed_opis.csv", 
+                     header = TRUE, sep =  ",", dec=".")
+head(depTab)
+str(depTab)
+
+head(depTab$sex)
+#10 Change sex variables from 0,1 to man and women
+depTab$sex <- factor(depTab$sex, levels = c(0,1), labels = c("mężczyzna", "Kobieta"), order = TRUE)
+#11  married variables from 0,1 to no and yes
+depTab$Married <- factor(depTab$Married, levels = c(0,1), labels = c("nie", "tak"), order = TRUE)
+#12 #10 Change column name to education years
+colnames(depTab$education_level) <- c("education_years")
+colnames(depTab)[colnames(depTab) == "education_level"] <- "education_years"
+sort(depTab$Survey_id, decreasing = FALSE)
+#13 Sort table according "surveyid"
+depTab[order(depTab$Survey_id, decreasing = FALSE),]
+depTab
+rm(list = ls(all.names = TRUE))
+#14 Read the dataset "laptops.csv" into R. 
+# Preview its structure and summarize the values.
+
+laptops <- read.table("E:/DS/WSB/R/Cwiczenie/dane do ćwiczeń/laptops.csv", 
+                     header = TRUE, sep =  ",", dec=".")
+
+#15 Create a new variable in the set called "Weight in kg". Enter 
+# the values of the "weight" variable into it, omitting the last 
+# two letters in each position.
+class(laptops$Weight)
+laptops <- transform(laptops, weight_in_Kg = Weight)
+laptops$weight_in_Kg <- as.numeric(gsub("kg", "", laptops$weight_in_Kg))
+class(laptops$weight_in_Kg)
+mean(laptops$weight_in_Kg)
+
+#16 Make sure that the type of the new laptop weight variable is numeric. 
+# Calculate the average laptop weight.
+class(laptops$Ram)
+laptops <- transform(laptops, Ram_in_GB = Ram)
+#17 Change the values ​​of the "Ram" variable in the same way as in the previous 
+# tasks. Make "Ram" contain only numbers representing 
+# the amount of available memory. 
+# Change the name of the column to "Ram in GB".
+laptops$Ram_in_GB <- as.numeric(gsub("GB", "", laptops$Ram_in_GB))
+class(laptops$Ram_in_GB)
+head(laptops)
+
+#18 Load the dataset "Life Expectancy Data.csv" into R. 
+# Preview its structure and summarize the values.
+life <- read.table("E:/DS/WSB/R/Cwiczenie/dane do ćwiczeń/Life Expectancy Data.csv", 
+                      header = TRUE, sep =  ",", dec=".")
+summary(life)
+str(life)
+head(life)
+library(dplyr)
+#19 Filter the set – show data for 2013 only.
+filter(life$Schooling,life$Year==2013)
+life[life$Year==2013,grep("Schooling",colnames(life))]
+#20 Summarize the values ​​of the variable "Schooling" for 
+#the year 2013 (without saving the subset to a new object).
+
+summary(life[life$Year==2013,grep("Schooling",colnames(life))])
+head(life)
+
+#21 Calculate the average life expectancy (Life.expectancy) 
+#for Developing countries in 2010.
+life2 <- life[life$Year==2010&life$Status=="Developing",grep("Life.expectancy",colnames(life))]
+mean(life2)
+
+#22
+#Calculate the deviation of the variable "Adult.Mortality" 
+#for three selected countries.
+
+lifeMor <-life[life$Country=="Germany"| life$Country=="Poland"| life$Country=="France",]
+sd(lifeMor$Adult.Mortality)
+
+#23 Check what the average BMI value was for the entire world 
+#during the entire analyzed period.
+mean(life$BMI, na.rm=TRUE)
